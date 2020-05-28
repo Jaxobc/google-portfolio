@@ -26,3 +26,14 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+function addRandomPlayer() {
+  const players =
+      ['Beast', 'Siya Kolisi', 'Latica Nela', 'Chipo Mupeso', 'Gareth Schreuder', 'Andrew James', 'Niaan'];
+  // Pick a random player.
+  const player = players[Math.floor(Math.random() * players.length)];
+
+  // Add it to the page.
+  const playerContainer = document.getElementById('greeting-container');
+  playerContainer.innerText = player;
+}
