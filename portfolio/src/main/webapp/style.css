@@ -8,9 +8,40 @@
   margin-top: 20px;
 }
 
+/*center content of element*/
 #center {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
 }
+
+/*create row*/
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+/* Create three columns that sit next to each other */
+.column {
+  flex: 32.5%;
+  max-width: 32.5%;
+  padding: 0 4px;
+}
+
+/* Responsive layout - makes a two column-grid */
+@media screen and (max-width: 2000px) and (min-width: 10001px){
+  .column {
+    flex: 50%;
+    max-width: 50%;
+  }
+} 
+
+/* Responsive layout - makes a one columns grid */
+@media screen and (max-width: 1000px) {
+  .column {
+    flex: 100%;
+    max-width: 100%;
+  }
+} 

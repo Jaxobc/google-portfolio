@@ -27,6 +27,9 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
+/**
+ * Adds a random rugby player's name to the page.
+ */
 function addRandomPlayer() {
   const players =
       ['Beast', 'Siya Kolisi', 'Latica Nela', 'Chipo Mupeso', 'Gareth Schreuder', 'Andrew James', 'Niaan'];
