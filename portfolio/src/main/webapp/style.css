@@ -1,15 +1,20 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+/*Navigation Bar */
+#topnav {
+  color: white;
+  background-color: lightgray;
+  font-size: 20px;
+  text-decoration: none;
 }
 
-#greeting-container {
-  margin-top: 20px;
+/* Change color of links when hovering */
+#topnav a:hover {
+  color: gray;
+  background-color: white;
 }
 
 /*center content of element*/
-#center {
+.center {
+  text-align: center;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -21,6 +26,12 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0 4px;
+}
+
+/*Standard size of images in the grid*/
+.image-size {
+  width: 300px;
+  height: 300px;
 }
 
 /* Create three columns that sit next to each other */
@@ -35,6 +46,8 @@
   .column {
     flex: 50%;
     max-width: 50%;
+    width: 300px;
+    height: 300px;
   }
 } 
 
@@ -45,3 +58,17 @@
     max-width: 100%;
   }
 } 
+
+/*Standard size of contact images */
+.contact {
+  width: 100px;
+  height: 100px;
+}
+
+#bottombar {
+  text-align: center;
+  color: white;
+  background-color: gray;
+  font-size: 20px;
+  text-decoration: none;
+}
