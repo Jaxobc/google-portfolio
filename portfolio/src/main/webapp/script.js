@@ -12,16 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random rugby player's name to the page.
+/** 
+ * Return value directly from servlet instead of opening page.
  */
-function addRandomPlayer() {
-  const players =
-      ['Beast', 'Siya Kolisi', 'Latica Nela', 'Chipo Mupeso', 'Gareth Schreuder', 'Andrew James', 'Niaan'];
-  // Pick a random player.
-  const player = players[Math.floor(Math.random() * players.length)];
-
-  // Add it to the page.
-  const playerContainer = document.getElementById('greeting-container');
-  playerContainer.innerText = player;
+async function getMessages() {
+  const response = await fetch('/data');
+  const message = await response.text();
+  document.getElementById('hey-container').innerText = message;
 }
