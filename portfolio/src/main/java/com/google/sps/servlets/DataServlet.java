@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -27,16 +32,25 @@ import java.util.ArrayList;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  ArrayList<String> comments = new ArrayList<String>();
-  Gson gson = new Gson();
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String json = gson.toJson(comments);
+    Query query = new Query("Task");
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    ArrayList<String> comments = new ArrayList<String>();
+    for (Entity entity : results.asIterable()) {
+      String comment = (String) entity.getProperty("comment");
+
+      comments.add(comment);
+    }
+
+    Gson gson = new Gson();
 
     // Send the JSON as the response
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(gson.toJson(comments));
   }
 
   @Override
@@ -44,14 +58,14 @@ public class DataServlet extends HttpServlet {
     // Get the input from the form.
     String text = request.getParameter("text-input");
 
-    //Add input to current comments.
-    comments.add(text);
-    String[] comment = text.split("");
+    // Add input to current comments in datastore.
+    Entity taskEntity = new Entity("Task");
+    taskEntity.setProperty("comment", text);
 
-
-    // Respond with the recent and past comments.
-    response.setContentType("application/json;");
-    response.getWriter().println(comments.toString());
-  
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(taskEntity);
+    
+    // Redirect to index page.
+    response.sendRedirect("/index.html");
   }  
 }

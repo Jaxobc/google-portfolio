@@ -20,3 +20,16 @@ async function getMessages() {
   const message = await response.text();
   document.getElementById('hey-container').innerText = message;
 }
+
+/** Fetches comments from the server and adds them to the DOM. */
+function loadComments() {
+  fetch('/data').then(response => response.json()).then(data => {
+    const commentElement = document.getElementById('comments');
+
+    data.forEach(comment => {
+      const taskElement = document.createElement('li');
+      taskElement.innerText=comment;
+      commentElement.appendChild(taskElement);
+      })
+  });
+}
