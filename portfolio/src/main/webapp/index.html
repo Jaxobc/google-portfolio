@@ -6,19 +6,19 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="loadComments()">
     <div class="center">
       <h1>Jacob's Portfolio</h1>
-    </div> 
+    </div>
     <div id="topnav">
       <a class="active" href="#home">HOME</a>
       <a href="faq.html">FAQ</a>
       <a href="contact.html">CONTACT</a>
-    </div> 
+    </div>
     <div id="intro">
       <h2>About Me</h2>
       <p>
-        My name is Jacob Chidawaya, a Zimbawean that was born and raised in South Africa. I am a 
+        My name is Jacob Chidawaya, a Zimbawean that was born and raised in South Africa. I am a
         rising sophmore at the University of Pennsylvania majoring in Computer Science and
         minoring in Philsophy and Consumer Psychology. This summer I am a Google Step intern
         looking to gain insight into a potential career path whilst developing my professional
@@ -35,7 +35,7 @@
     </div>
     <div>
       <h2>Flowerboy</h2>
-      <p> 
+      <p>
         Amongst Tyler's albums my easy going demeanour is best matched by Flowerboy. Before the first 
         note is sound the album cover depicts a vivid scenery which is oddly soothing. The bright 
         background contrasts the figure standing with folded arms whilst facing away from the viewer. 
@@ -49,12 +49,12 @@
         feelings. The style is uniquely his own with inspiration drawn from the many artists he features. 
         This album remains amongst my favourite listens and I could play See You Again on repeat for 
         hours. I like to think that I could be described as a Flowerboy, both expressive and calm 
-      </p> 
-      <img class="center" src="images/tyler.jpg" width="600" height="600" alt="Flowerboy Album Cover"> 
+      </p>
+      <img class="center" src="images/tyler.jpg" width="600" height="600" alt="Flowerboy Album Cover">
     </div>
     <div>
       <h2>Ballers</h2>
-      <p> 
+      <p>
         The following is a collection of players amd teams who have inspired my love for the game. 
         Soccer is the most popular sport in the world. This popularity means there are many boys 
         like me who grow up loving the game and wishing to one day ascend to the heights where 
@@ -70,7 +70,7 @@
         <div class="column">
           <img src="images/brazil.jpg" class="image-size">
           <img src="images/messi.jpg" class="image-size">
-          <img src="images/beckham.jpg" class="image-size"> 
+          <img src="images/beckham.jpg" class="image-size">
         </div>
         <div class="column">
           <img src="images/pep.jpg" class="image-size">
@@ -86,16 +86,27 @@
     </div>
     <div>
     <div>
-      <h2>Comments</h2>
+      <h2>Comment Section</h2>
       <form action="/data" method="POST">
-        <p>Enter your comment</p>
-        <textarea name="text-input">........</textarea>
-        <br/>
-        <input type="submit" />
+        <fieldset>
+        <legend>Comments:</legend>
+          <p>Required Format: Text without whitespaces at the beginning or end.</p>
+          <label for="name">Name:</label><br>
+          <input type="text" required pattern="\S(.*\S)?" maxlength="20" name="name"  textarea placeholder="Enter comment here..."><br>
+          <label for="comment">Comment:</label><br>
+          <input type="text" required pattern="\S(.*\S)?" maxlength="120" name="text-input" textarea placeholder="Enter comment here..."><br><br>
+          <label for="commentLimit">Choose the amount of comments you want to see:</label>
+          <select type="number" id="commentLimit" name="commentLimit">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select><br><br>
+          <input type="submit" value="Submit"><br><br>
+          <div id="comments" class="comment-list"></div>
+        </fieldset>
       </form>
-      <body onload="loadComments()"></body>
-      <div id="comments"></div>
-    </div>      
+    </div>
     <div id="bottombar">
       <p> Thank you <br> <br> </p>
     </div>
