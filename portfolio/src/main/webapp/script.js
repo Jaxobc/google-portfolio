@@ -12,24 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** 
- * Return value directly from servlet instead of opening page.
- */
-async function getMessages() {
-  const response = await fetch('/data');
-  const message = await response.text();
-  document.getElementById('hey-container').innerText = message;
-}
-
 /** Fetches comments from the server and adds them to the DOM. */
 function loadComments() {
   fetch('/data').then(response => response.json()).then(data => {
-    const commentElement = document.getElementById('comments');
+    const commentElements = document.getElementById('comments');
 
     data.forEach(comment => {
-      const taskElement = document.createElement('li');
-      taskElement.innerText=comment;
-      commentElement.appendChild(taskElement);
-      })
+      commentElements.appendChild(createCommentElement(comment));
+    })
   });
+}
+
+/**Creates an element that represents a comment with a delete button. */
+function createCommentElement(comment) {
+  const commentElement = document.createElement('li');
+  commentElement.className = 'comment';
+
+  const textElement = document.createElement('span');
+  textElement.className = 'text';
+  textElement.innerText = comment.commentString;
+
+  const nameElement = document.createElement('span');
+  nameElement.className = 'name';
+  nameElement.innerText = comment.commentor + ":";
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.className = 'delete';
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteComment(comment);
+
+    // Remove the comment from the DOM.
+    commentElement.remove();
+  });
+
+  commentElement.appendChild(nameElement);
+  commentElement.appendChild(textElement);
+  commentElement.appendChild(deleteButtonElement);
+  return commentElement;
+}
+
+/** Tells the server to delete the comment. */
+function deleteComment(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment.id);
+  debugger;
+  fetch('/delete-data', {method: 'POST', body: params});
 }

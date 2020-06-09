@@ -72,3 +72,23 @@
   font-size: 20px;
   text-decoration: none;
 }
+
+.comment-list {
+  margin: 10px;
+  padding: 10px;
+}
+
+.comment-list li {
+  display: block;
+  width: 1000px;
+  height: 30px;
+  border: 1px solid;
+}
+
+#comments > * > .name {
+  padding-right: 10px;
+}
+
+#comments > * > .delete {
+  float: right;
+}
