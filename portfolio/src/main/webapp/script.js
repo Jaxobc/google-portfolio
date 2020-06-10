@@ -13,7 +13,10 @@
 // limitations under the License.
 
 /** Fetches comments from the server and adds them to the DOM. */
-function loadComments() {
+function loadCommentSection() {
+google.charts.load('current', {packages: ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
   fetch('/data').then(response => response.json()).then(data => {
     const commentElements = document.getElementById('comments');
 
