@@ -56,6 +56,5 @@ function createCommentElement(comment) {
 function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
-  debugger;
   fetch('/delete-data', {method: 'POST', body: params});
 }
