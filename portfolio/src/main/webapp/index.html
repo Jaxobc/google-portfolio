@@ -5,6 +5,11 @@
     <title>Jacob's Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+      google.charts.load('current', {packages: ['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+    </script>
   </head>
   <body onload="loadComments()">
     <div class="center">
@@ -85,7 +90,6 @@
       </div>
     </div>
     <div>
-    <div>
       <h2>Comment Section</h2>
       <form action="/data" method="POST">
         <fieldset>
@@ -104,9 +108,11 @@
           </select><br><br>
           <input type="submit" value="Submit"><br><br>
           <div id="comments" class="comment-list"></div>
+          <div id="chart-div"> </div>
         </fieldset>
       </form>
     </div>
+
     <div id="bottombar">
       <p> Thank you <br> <br> </p>
     </div>
