@@ -37,13 +37,12 @@ public class DataServlet extends HttpServlet {
   private final static String tblTitle = "Comment";
   private final static String tblComment = "comment";
   private final static String tblName = "name";
+  private final static String tblLimit = "limit";
   private final static String tblTime = "timestamp";
 
   private final static String htmlComment = "text-input";
   private final static String htmlName = "name";
   private final static String htmlLimit = "commentLimit";
-
-  private static int limit = -1;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,12 +50,18 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-
+    
+    
+   
     List<Comment> comments = new ArrayList<Comment>();
     int count = 0;
+    int limit = 0;
     for (Entity entity : results.asIterable()) {
-      if (limit > 0) {
-        if(count < limit){
+      if (count == 0) {
+        limit = Integer.parseInt((String) entity.getProperty(tblLimit));
+      }
+
+      if(count < limit){
         String commentString = (String) entity.getProperty(tblComment);
         String name = (String) entity.getProperty(tblName);
         long id = entity.getKey().getId();
@@ -64,16 +69,8 @@ public class DataServlet extends HttpServlet {
         Comment comment = new Comment(id, commentString, name);
         comments.add(comment);
         count++;
-        }else {
-          break;
-        }
       }else {
-        String commentString = (String) entity.getProperty(tblComment);
-        String name = (String) entity.getProperty(tblName);
-        long id = entity.getKey().getId();
-
-        Comment comment = new Comment(id, commentString, name);
-        comments.add(comment);
+          break;
       }
     }
 
@@ -89,6 +86,7 @@ public class DataServlet extends HttpServlet {
     // Get the input from the form.
     String text = request.getParameter(htmlComment);
     String name = request.getParameter(htmlName);
+    String limit = request.getParameter(htmlLimit);
     long timestamp = System.currentTimeMillis();
 
     // Add input to current comments in datastore.
@@ -96,12 +94,10 @@ public class DataServlet extends HttpServlet {
     taskEntity.setProperty(tblComment, text);
     taskEntity.setProperty(tblName, name);
     taskEntity.setProperty(tblTime, timestamp);
+    taskEntity.setProperty(tblLimit, limit);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(taskEntity);
-
-     // Set how many comments will be printed after redirect.
-     limit = Integer.parseInt(request.getParameter(htmlLimit));
 
     // Redirect to index page.
     response.sendRedirect("/index.html");
