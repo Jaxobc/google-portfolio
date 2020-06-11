@@ -18,14 +18,14 @@ package com.google.sps.data;
 public final class Comment {
 
   private final long id;
-  private final String commentString;
-  private final String commentor;
+  private final String message;
+  private final String author;
   private final int commentLimit;
 
-  public Comment(long id, String commentString, String commentor, int commentLimit) {
+  public Comment(long id, String message, String author, int commentLimit) {
     this.id = id;
-    this.commentString = commentString;
-    this.commentor = commentor;
+    this.message = message;
+    this.author = author;
     this.commentLimit = commentLimit;
   }
 }

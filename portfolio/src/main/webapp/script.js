@@ -46,11 +46,11 @@ function createCommentElement(comment) {
 
   const textElement = document.createElement('span');
   textElement.className = 'text';
-  textElement.innerText = comment.commentString;
+  textElement.innerText = comment.message;
 
   const nameElement = document.createElement('span');
   nameElement.className = 'name';
-  nameElement.innerText = comment.commentor + ":";
+  nameElement.innerText = comment.author + ":";
 
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
@@ -77,3 +77,4 @@ function drawChart(limitMap) {
       document.getElementById('chart-div'));
   chart.draw(data, options);
 }
+
