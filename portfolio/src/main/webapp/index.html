@@ -6,10 +6,6 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <!-- <script>
-      google.charts.load('current', {packages: ['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-    </script> -->
   </head>
   <body onload="loadCommentSection()">
     <div class="center">
@@ -100,19 +96,18 @@
           <label for="comment">Comment:</label><br>
           <input type="text" required pattern="\S(.*\S)?" maxlength="120" name="text-input" textarea placeholder="Enter comment here..."><br><br>
           <label for="commentLimit">Choose the amount of comments you want to see:</label>
-          <select type="number" id="commentLimit" name="commentLimit">
+          <input type="submit" value="Submit"><br><br>
+          <select type="number" id="commentLimit" name="commentLimit" onchange=loadCommentSection()>
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
           </select><br><br>
-          <input type="submit" value="Submit"><br><br>
           <div id="comments" class="comment-list"></div>
           <div id="chart-div"> </div>
         </fieldset>
       </form>
     </div>
-
     <div id="bottombar">
       <p> Thank you <br> <br> </p>
     </div>

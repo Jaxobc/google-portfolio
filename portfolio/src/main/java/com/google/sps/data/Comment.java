@@ -20,10 +20,12 @@ public final class Comment {
   private final long id;
   private final String commentString;
   private final String commentor;
+  private final int commentLimit;
 
-  public Comment(long id, String commentString, String commentor) {
+  public Comment(long id, String commentString, String commentor, int commentLimit) {
     this.id = id;
     this.commentString = commentString;
     this.commentor = commentor;
+    this.commentLimit = commentLimit;
   }
 }

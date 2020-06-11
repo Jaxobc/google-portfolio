@@ -51,27 +51,17 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     
-    
    
     List<Comment> comments = new ArrayList<Comment>();
     int count = 0;
-    int limit = 0;
     for (Entity entity : results.asIterable()) {
-      if (count == 0) {
-        limit = Integer.parseInt((String) entity.getProperty(tblLimit));
-      }
-
-      if(count < limit){
-        String commentString = (String) entity.getProperty(tblComment);
-        String name = (String) entity.getProperty(tblName);
-        long id = entity.getKey().getId();
-
-        Comment comment = new Comment(id, commentString, name);
-        comments.add(comment);
-        count++;
-      }else {
-          break;
-      }
+      String commentString = (String) entity.getProperty(tblComment);
+      String name = (String) entity.getProperty(tblName);
+      long id = entity.getKey().getId();
+      int limit = Integer.parseInt((String) entity.getProperty(tblLimit));
+      
+      Comment comment = new Comment(id, commentString, name, limit);
+      comments.add(comment);
     }
 
     Gson gson = new Gson();

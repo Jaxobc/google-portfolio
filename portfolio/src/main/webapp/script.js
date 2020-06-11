@@ -14,16 +14,29 @@
 
 /** Fetches comments from the server and adds them to the DOM. */
 function loadCommentSection() {
-google.charts.load('current', {packages: ['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+  
 
   fetch('/data').then(response => response.json()).then(data => {
     const commentElements = document.getElementById('comments');
+    commentElements.innerText = "";
+    var limit = document.getElementById("commentLimit").value;
+    let limitMap = new Map();
+    var count = 0;
 
     data.forEach(comment => {
-      commentElements.appendChild(createCommentElement(comment));
+      if (count < limit){
+        commentElements.appendChild(createCommentElement(comment));
+        count++;
+      } 
+      var mapKey = comment.commentLimit;
+      var currentLimit = limitMap.has(mapKey) ? limitMap.get(mapKey) : 0;
+      limitMap.set(mapKey, currentLimit + 1); 
     })
+
+  google.charts.load('current', {packages: ['corechart']});
+  google.charts.setOnLoadCallback(function() { drawChart(limitMap); });
   });
+
 }
 
 /**Creates an element that represents a comment with a delete button. */
@@ -39,42 +52,23 @@ function createCommentElement(comment) {
   nameElement.className = 'name';
   nameElement.innerText = comment.commentor + ":";
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.className = 'delete';
-  deleteButtonElement.innerText = 'Delete';
-  deleteButtonElement.addEventListener('click', () => {
-    deleteComment(comment);
-
-    // Remove the comment from the DOM.
-    commentElement.remove();
-  });
-
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
-  commentElement.appendChild(deleteButtonElement);
   return commentElement;
 }
 
-/** Tells the server to delete the comment. */
-function deleteComment(comment) {
-  const params = new URLSearchParams();
-  params.append('id', comment.id);
-  fetch('/delete-data', {method: 'POST', body: params});
-}
-
 /** Creates a chart and adds it to the page. */
-function drawChart() {
+function drawChart(limitMap) {
   const data = new google.visualization.DataTable();
-  data.addColumn('string', 'Animal');
+  data.addColumn('string', 'Limit');
   data.addColumn('number', 'Count');
-        data.addRows([
-          ['Lions', 10],
-          ['Tigers', 5],
-          ['Bears', 15]
-        ]);
+
+  for (const [key, value] of Object.entries(limitMap)) {
+    data.addRow([key, value])
+  }
 
   const options = {
-    'title': 'Zoo Animals',
+    'title': 'Comment Limits',
     'width':500,
     'height':400
   };
