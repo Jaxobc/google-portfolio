@@ -14,13 +14,11 @@
 
 /** Fetches comments from the server and adds them to the DOM. */
 function loadCommentSection() {
-  
-
   fetch('/data').then(response => response.json()).then(data => {
     const commentElements = document.getElementById('comments');
-    commentElements.innerText = "";
-    var limit = document.getElementById("commentLimit").value;
-    let limitMap = new Map();
+    commentElements.innerText = '';
+    const limit = document.getElementById('commentLimit').value;
+    const limitMap = new Map();
     var count = 0;
 
     data.forEach(comment => {
@@ -33,10 +31,9 @@ function loadCommentSection() {
       limitMap.set(mapKey, currentLimit + 1); 
     })
 
-  google.charts.load('current', {packages: ['corechart']});
-  google.charts.setOnLoadCallback(function() { drawChart(limitMap); });
+    google.charts.load('current', {packages: ['corechart']});
+    google.charts.setOnLoadCallback(function() {drawChart(limitMap);});
   });
-
 }
 
 /**Creates an element that represents a comment with a delete button. */
@@ -50,7 +47,7 @@ function createCommentElement(comment) {
 
   const nameElement = document.createElement('span');
   nameElement.className = 'name';
-  nameElement.innerText = comment.author + ":";
+  nameElement.innerText = comment.author + ':';
 
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
@@ -63,18 +60,16 @@ function drawChart(limitMap) {
   data.addColumn('string', 'Limit');
   data.addColumn('number', 'Count');
 
-  for (const [key, value] of Object.entries(limitMap)) {
-    data.addRow([key, value])
+  for (const [key, value] of limitMap.entries()) {
+    data.addRow([key, value]);    
   }
 
   const options = {
     'title': 'Comment Limits',
-    'width':500,
-    'height':400
+    'width': 500,
+    'height': 400,
   };
 
-  const chart = new google.visualization.PieChart(
-      document.getElementById('chart-div'));
+  const chart = new google.visualization.PieChart(document.getElementById('chart-div'));
   chart.draw(data, options);
 }
-

@@ -20,9 +20,9 @@ public final class Comment {
   private final long id;
   private final String message;
   private final String author;
-  private final int commentLimit;
+  private final String commentLimit;
 
-  public Comment(long id, String message, String author, int commentLimit) {
+  public Comment(long id, String message, String author, String commentLimit) {
     this.id = id;
     this.message = message;
     this.author = author;
