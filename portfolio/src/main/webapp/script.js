@@ -30,31 +30,13 @@ function createCommentElement(comment) {
 
   const textElement = document.createElement('span');
   textElement.className = 'text';
-  textElement.innerText = comment.commentString;
+  textElement.innerText = comment.message;
 
   const nameElement = document.createElement('span');
   nameElement.className = 'name';
-  nameElement.innerText = comment.commentor + ":";
-
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.className = 'delete';
-  deleteButtonElement.innerText = 'Delete';
-  deleteButtonElement.addEventListener('click', () => {
-    deleteComment(comment);
-
-    // Remove the comment from the DOM.
-    commentElement.remove();
-  });
+  nameElement.innerText = comment.author + ":";
 
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
-  commentElement.appendChild(deleteButtonElement);
   return commentElement;
-}
-
-/** Tells the server to delete the comment. */
-function deleteComment(comment) {
-  const params = new URLSearchParams();
-  params.append('id', comment.id);
-  fetch('/delete-data', {method: 'POST', body: params});
 }
