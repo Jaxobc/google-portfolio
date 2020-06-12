@@ -12,16 +12,64 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random rugby player's name to the page.
- */
-function addRandomPlayer() {
-  const players =
-      ['Beast', 'Siya Kolisi', 'Latica Nela', 'Chipo Mupeso', 'Gareth Schreuder', 'Andrew James', 'Niaan'];
-  // Pick a random player.
-  const player = players[Math.floor(Math.random() * players.length)];
+/** Fetches comments from the server and adds them to the DOM. */
+function loadCommentSection() {
+  fetch('/data').then(response => response.json()).then(data => {
+    const commentElements = document.getElementById('comments');
+    commentElements.innerText = '';
+    const limit = document.getElementById('commentLimit').value;
+    const limitMap = new Map();
+    var count = 0;
 
-  // Add it to the page.
-  const playerContainer = document.getElementById('greeting-container');
-  playerContainer.innerText = player;
+    data.forEach(comment => {
+      if (count < limit){
+        commentElements.appendChild(createCommentElement(comment));
+        count++;
+      } 
+      var mapKey = comment.commentLimit;
+      var currentLimit = limitMap.has(mapKey) ? limitMap.get(mapKey) : 0;
+      limitMap.set(mapKey, currentLimit + 1); 
+    })
+
+    google.charts.load('current', {packages: ['corechart']});
+    google.charts.setOnLoadCallback(function() {drawChart(limitMap);});
+  });
+}
+
+/**Creates an element that represents a comment with a delete button. */
+function createCommentElement(comment) {
+  const commentElement = document.createElement('li');
+  commentElement.className = 'comment';
+
+  const textElement = document.createElement('span');
+  textElement.className = 'text';
+  textElement.innerText = comment.message;
+
+  const nameElement = document.createElement('span');
+  nameElement.className = 'name';
+  nameElement.innerText = comment.author + ':';
+
+  commentElement.appendChild(nameElement);
+  commentElement.appendChild(textElement);
+  return commentElement;
+}
+
+/** Creates a chart and adds it to the page. */
+function drawChart(limitMap) {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Limit');
+  data.addColumn('number', 'Count');
+
+  for (const [key, value] of limitMap.entries()) {
+    data.addRow([key, value]);    
+  }
+
+  const options = {
+    'title': 'Comment Limits',
+    'width': 500,
+    'height': 400,
+  };
+
+  const chart = new google.visualization.PieChart(document.getElementById('chart-div'));
+  chart.draw(data, options);
 }

@@ -14,20 +14,80 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.sps.data.Comment;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  private final static String tblTitle = "Comment";
+  private final static String tblComment = "comment";
+  private final static String tblName = "name";
+  private final static String tblLimit = "limit";
+  private final static String tblTime = "timestamp";
+
+  private final static String htmlComment = "text-input";
+  private final static String htmlName = "name";
+  private final static String htmlLimit = "commentLimit";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello Jacob!</h1>");
+    Query query = new Query(tblTitle).addSort(tblTime, SortDirection.DESCENDING);;
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Comment> comments = new ArrayList<Comment>();
+    for (Entity entity : results.asIterable()) {
+      String commentString = (String) entity.getProperty(tblComment);
+      String name = (String) entity.getProperty(tblName);
+      long id = entity.getKey().getId();
+      String limit = (String) entity.getProperty(tblLimit);
+      
+      Comment comment = new Comment(id, commentString, name, limit);
+      comments.add(comment);
+    }
+
+    Gson gson = new Gson();
+
+    // Send the JSON as the response
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(comments));
   }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String text = request.getParameter(htmlComment);
+    String name = request.getParameter(htmlName);
+    String limit = request.getParameter(htmlLimit);
+    long timestamp = System.currentTimeMillis();
+
+    // Add input to current comments in datastore.
+    Entity taskEntity = new Entity(tblTitle);
+    taskEntity.setProperty(tblComment, text);
+    taskEntity.setProperty(tblName, name);
+    taskEntity.setProperty(tblTime, timestamp);
+    taskEntity.setProperty(tblLimit, limit);
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(taskEntity);
+
+    // Redirect to index page.
+    response.sendRedirect("/index.html");
+  }  
 }
