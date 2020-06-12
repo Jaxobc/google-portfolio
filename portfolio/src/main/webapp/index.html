@@ -69,25 +69,25 @@
       </p>
       <div class="row">
         <div class="column">
-          <img src="images/brazil.jpg" class="image-size">
-          <img src="images/messi.jpg" class="image-size">
-          <img src="images/beckham.jpg" class="image-size">
+          <img src="images/brazil.jpg" alt="Brazilian football team" class="image-size">
+          <img src="images/messi.jpg" alt="Messi kicking ball" class="image-size">
+          <img src="images/beckham.jpg" alt="Beckham Addidas advert" class="image-size">
         </div>
         <div class="column">
-          <img src="images/pep.jpg" class="image-size">
-          <img src="images/city.jpg" class="image-size">
-          <img src="images/sa.jpg" class="image-size">
+          <img src="images/pep.jpg" alt="Pep on the bench" class="image-size">
+          <img src="images/city.jpg" alt="Man City team flag" class="image-size">
+          <img src="images/sa.jpg" alt="Bafana Bafana celebrating" class="image-size">
         </div>
         <div class="column">
-          <img src="images/kevin.jpg" class="image-size">
-          <img src="images/spain.jpg" class="image-size">
-          <img src="images/ronaldo.jpg" class="image-size">
+          <img src="images/kevin.jpg" alt="De Bruyne dribbling player" class="image-size">
+          <img src="images/spain.jpg" alt="Spanish football team" class="image-size">
+          <img src="images/ronaldo.jpg" alt="Ronaldo playing for Madrid" class="image-size">
         </div>
       </div>
     </div>
     <div>
       <h2>Comment Section</h2>
-      <form action="/data" method="POST">
+      <form id="form" class="hidden" method="POST" enctype="multipart/form-data">
         <fieldset>
         <legend>Comments:</legend>
           <p>Required Format: Text without whitespaces at the beginning or end.</p>
@@ -95,14 +95,17 @@
           <input type="text" required pattern="\S(.*\S)?" maxlength="20" name="name"  textarea placeholder="Enter comment here..."><br>
           <label for="comment">Comment:</label><br>
           <input type="text" required pattern="\S(.*\S)?" maxlength="120" name="text-input" textarea placeholder="Enter comment here..."><br><br>
+          <label for="image">Image:</label><br>
+          <input type="file" name="image">
+          <br/><br/>
           <label for="commentLimit">Choose the amount of comments you want to see:</label>
-          <input type="submit" value="Submit"><br><br>
-          <select type="number" id="commentLimit" name="commentLimit" onchange=loadCommentSection()>
+          <select type="number" id="commentLimit" name="commentLimit" onchange="loadCommentSection()">
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
-          </select><br><br>
+          </select><br>
+           <input type="submit" value="Submit"><br><br>
           <div id="comments" class="comment-list"></div>
           <div id="chart-div"> </div>
         </fieldset>

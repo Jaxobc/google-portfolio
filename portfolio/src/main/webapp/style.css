@@ -92,3 +92,7 @@
 #comments > * > .delete {
   float: right;
 }
+
+.hidden {
+  display: none;
+}
