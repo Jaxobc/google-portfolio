@@ -91,28 +91,27 @@
         <fieldset>
         <legend>Comments:</legend>
           <p>Required Format: Text without whitespaces at the beginning or end.</p>
-          <label for="name">Name:</label><br>
-          <input type="text" required pattern="\S(.*\S)?" maxlength="20" name="name"  textarea placeholder="Enter comment here..."><br>
-          <label for="comment">Comment:</label><br>
-          <input type="text" required pattern="\S(.*\S)?" maxlength="120" name="text-input" textarea placeholder="Enter comment here..."><br><br>
-          <label for="image">Image:</label><br>
-          <input type="file" name="image">
-          <br/><br/>
+          <label for="name">Name:</label>
+          <input type="text" required pattern="\S(.*\S)?" maxlength="20" name="name"  textarea placeholder="Enter comment here...">
+          <label for="comment">Comment:</label>
+          <input class="block-break" type="text" required pattern="\S(.*\S)?" maxlength="120" name="text-input" textarea placeholder="Enter comment here...">
+          <label for="image">Image:</label>
+          <input class="block-break" type="file" name="image">
           <label for="commentLimit">Choose the amount of comments you want to see:</label>
-          <select type="number" id="commentLimit" name="commentLimit" onchange="loadCommentSection()">
+          <select class="block-break" type="number" id="commentLimit" name="commentLimit" onchange="loadCommentSection()">
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
           </select><br>
-           <input type="submit" value="Submit"><br><br>
+           <input class="block-break" type="submit" value="Submit">
           <div id="comments" class="comment-list"></div>
           <div id="chart-div"> </div>
         </fieldset>
       </form>
     </div>
-    <div id="bottombar">
-      <p> Thank you <br> <br> </p>
+    <div id="bottombar" class="block-break"> 
+      <p> Thank you </p>
     </div>
   </body>
 </html>

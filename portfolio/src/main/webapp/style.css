@@ -96,3 +96,19 @@
 .hidden {
   display: none;
 }
+
+.block-break { 
+  margin-bottom: 2em; 
+}
+
+form label { 
+  display: block; 
+}
+
+form input {
+  display: block;
+}
+
+form select {
+  display: block;
+}

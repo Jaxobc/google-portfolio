@@ -77,13 +77,11 @@ function drawChart(limitMap) {
 }
 
 function fetchBlobUrlAndShowForm() {
-  fetch('/blobstore-url')
-      .then((response) => {
-        return response.text();
-      })
-      .then((imageUploadUrl) => {
-        const messageForm = document.getElementById('form');
-        messageForm.action = imageUploadUrl;
-        messageForm.classList.remove('hidden');
-      });
+  fetch('/blobstore-url').then((response) => {return response.text();
+  })
+  .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('form');
+    messageForm.action = imageUploadUrl;
+    messageForm.classList.remove('hidden');
+  });
 }
