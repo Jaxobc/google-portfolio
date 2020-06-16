@@ -14,6 +14,8 @@
 
 /** Fetches comments from the server and adds them to the DOM. */
 function loadCommentSection() {
+  fetchBlobUrlAndShowForm();
+
   fetch('/data').then(response => response.json()).then(data => {
     const commentElements = document.getElementById('comments');
     commentElements.innerText = '';
@@ -72,4 +74,14 @@ function drawChart(limitMap) {
 
   const chart = new google.visualization.PieChart(document.getElementById('chart-div'));
   chart.draw(data, options);
+}
+
+function fetchBlobUrlAndShowForm() {
+  fetch('/blobstore-url').then((response) => {return response.text();
+  })
+  .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('form');
+    messageForm.action = imageUploadUrl;
+    messageForm.classList.remove('hidden');
+  });
 }
