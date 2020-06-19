@@ -53,6 +53,17 @@ function createCommentElement(comment) {
 
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
+
+  imageURL = comment.imageURL;
+  if(imageURL != null){
+    console.log("Vibes");
+    const imgElement = document.createElement('IMG');
+    imgElement.className = 'image';
+    imgElement.setAttribute('src', imageURL);
+
+    commentElement.appendChild(imgElement);
+  }
+  
   return commentElement;
 }
 

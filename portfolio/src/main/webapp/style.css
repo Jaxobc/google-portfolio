@@ -89,8 +89,14 @@
   padding-right: 10px;
 }
 
-#comments > * > .delete {
+#comments > .comment {
+  height: 110px;
+}
+
+#comments > * > .image {
   float: right;
+  height: 100px;
+  width: 100px;
 }
 
 .hidden {
