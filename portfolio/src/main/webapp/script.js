@@ -56,8 +56,7 @@ function createCommentElement(comment) {
 
   imageURL = comment.imageURL;
   if(imageURL != null){
-    console.log("Vibes");
-    const imgElement = document.createElement('IMG');
+    const imgElement = document.createElement('img');
     imgElement.className = 'image';
     imgElement.setAttribute('src', imageURL);
 
