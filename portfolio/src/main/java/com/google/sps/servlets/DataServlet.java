@@ -72,8 +72,9 @@ public class DataServlet extends HttpServlet {
       String name = (String) entity.getProperty(tblName);
       long id = entity.getKey().getId();
       String limit = (String) entity.getProperty(tblLimit);
+      String image = (String) entity.getProperty(tblImage);
       
-      Comment comment = new Comment(id, commentString, name, limit);
+      Comment comment = new Comment(id, commentString, name, limit, image);
       comments.add(comment);
     }
 

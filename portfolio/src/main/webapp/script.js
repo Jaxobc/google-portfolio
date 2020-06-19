@@ -53,6 +53,16 @@ function createCommentElement(comment) {
 
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
+
+  imageURL = comment.imageURL;
+  if(imageURL != null){
+    const imgElement = document.createElement('img');
+    imgElement.className = 'image';
+    imgElement.setAttribute('src', imageURL);
+
+    commentElement.appendChild(imgElement);
+  }
+  
   return commentElement;
 }
 

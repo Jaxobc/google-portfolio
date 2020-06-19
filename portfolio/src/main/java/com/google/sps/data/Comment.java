@@ -21,11 +21,13 @@ public final class Comment {
   private final String message;
   private final String author;
   private final String commentLimit;
+  private final String imageURL;
 
-  public Comment(long id, String message, String author, String commentLimit) {
+  public Comment(long id, String message, String author, String commentLimit, String imageURL) {
     this.id = id;
     this.message = message;
     this.author = author;
     this.commentLimit = commentLimit;
+    this.imageURL = imageURL;
   }
 }
