@@ -305,7 +305,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-    @Test
+  @Test
   public void optionalAttendeeRegarded() {
     // Have three people have different events where one is an optional attendee busy 
     // in a slot where the mandatory people are available.  
@@ -337,7 +337,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-    // @Test
+  @Test
   public void justEnoughForMandatory() {
     // Have two people, but make it so that there is just enough room at one point in the day to
     // have the meeting for the mandatory attendee, but not the optional attendee.

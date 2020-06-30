@@ -22,16 +22,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/*
+A meeting query is used to ideally find the times when all attendees are available.
+
+A meeting query has two parameters, a collection of events and a meeting request.
+Each event in the collection has a time range, when it takes place, and a list of attendees.
+A request has a list of mandatory attendees, a list of optional attendees and a meeting duration.
+
+If an attendee is attending an event then they are unavailable during that event's time range.
+Available times returned should be greater or equal to the duration of the meeting request.
+If all optional attendees and mandatory attendees are available, those times should be returned.
+If there are no attendees, the whole day should be returned as available.
+If the duration of the meeting is longer than a day an empty list should be returned.
+If there are mandatory attendees and non of them are available an empty list should be returned.
+If there are mandatory and optional attendees and the optional attendees' availabilities do not coincide
+with the mandatory attendees' then only times when the mandatory attendees are free should be returned.
+If there are no mandatory attendees but there are optional attendees then the times when the optional attendees 
+are free should be returned.
+If there are times when none of the attendees are free then an empty list should be returned. 
+*/
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> attendees = request.getAttendees();
     Collection<String> optionalAttendees = request.getOptionalAttendees();
     long duration = request.getDuration();
 
-    if (attendees.isEmpty() && optionalAttendees.isEmpty()){
+    if (attendees.isEmpty() && optionalAttendees.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
-    }else 
-    if (duration > TimeRange.WHOLE_DAY.duration()){
+    }
+    if (duration > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
 
@@ -42,40 +61,41 @@ public final class FindMeetingQuery {
     List<TimeRange> mandatoryFree = new ArrayList<TimeRange>();
     mandatoryFree.add(TimeRange.WHOLE_DAY);
     List<TimeRange> optionalFree = new ArrayList<TimeRange>();
-    setFreeTimes(mandatoryFree, takenTime, duration);
+    setFreeTimes(mandatoryFree, takenTime);
 
-    if(takenTime.isEmpty()){
+    if(takenTime.isEmpty()) {
       optionalFree.add(TimeRange.WHOLE_DAY);
-      setFreeTimes(optionalFree, optionalBusy, duration);
+      setFreeTimes(optionalFree, optionalBusy);
+      removeTooShortTimes(optionalFree, duration);
       return optionalFree;
-    }else {
-      for(TimeRange t: mandatoryFree){
-        checkOptional(optionalFree, optionalBusy, t);
-      }
+    } 
+
+    for(TimeRange t: mandatoryFree) {
+        mutualFreeTimes(optionalFree, optionalBusy, t);
     }
 
-    if(!optionalFree.isEmpty()){
+    if(!optionalFree.isEmpty()) {
+      removeTooShortTimes(optionalFree, duration);
       return optionalFree;
     } else {
+      removeTooShortTimes(mandatoryFree, duration);
       return mandatoryFree;
     } 
   }
 
   private static void setTakenTimes(Collection<Event> events, List<TimeRange> takenTime, List<TimeRange> optionalBusy,
-      Collection<String> attendees, Collection<String> optionalAttendees){
+      Collection<String> attendees, Collection<String> optionalAttendees) {
 
-    for(Event e: events){
-      Set<String> mandatoryAtt = new HashSet<>();
-      Set<String> optionalAtt = new HashSet<>();
+    for(Event e: events) {
       Set<String> eventAtt = e.getAttendees();
+      Set<String> mandatoryAtt = new HashSet<>(eventAtt);
+      Set<String> optionalAtt = new HashSet<>(eventAtt);
 
-      mandatoryAtt.addAll(eventAtt);
       mandatoryAtt.retainAll(attendees);
-      optionalAtt.addAll(eventAtt);
       optionalAtt.retainAll(optionalAttendees);
 
-      if(mandatoryAtt.isEmpty()){
-        if(!optionalAtt.isEmpty()){
+      if(mandatoryAtt.isEmpty()) {
+        if(!optionalAtt.isEmpty()) {
         optionalBusy.add(e.getWhen());
       }
         continue;
@@ -85,61 +105,81 @@ public final class FindMeetingQuery {
     Collections.sort(takenTime, TimeRange.ORDER_BY_START);
   }
 
-  private static void setFreeTimes(List<TimeRange> mandatoryFree, List<TimeRange> takenTime, long duration ){
-    for(TimeRange t: takenTime){
+  private static void setFreeTimes(List<TimeRange> mandatoryFree, List<TimeRange> takenTime) {
+    for(TimeRange t: takenTime) {
       int lastIndex = mandatoryFree.size()-1;
       TimeRange latestRange = mandatoryFree.get(lastIndex);
-      int currentStart = latestRange.start();
-      int currentEnd = latestRange.end();
+      int latestStart = latestRange.start();
+      int latestEnd = latestRange.end();
 
       int takenStart = t.start();
       int takenEnd = t.end();
 
-      if(currentStart == takenStart || currentStart > takenStart){
-        if(currentStart > takenEnd){
+
+//T = takenTime
+//L = latestTime       
+      if(latestStart >= takenStart) {
+//T:    |---|
+//L:         |----------| 
+        if(latestStart > takenEnd) {
           continue;
         }
-        if(takenEnd < currentEnd){
-          setRange(mandatoryFree, duration, lastIndex, takenEnd, currentEnd, false);
-        }else{
+//T:    |--------|
+//L:         |----------| 
+        if(latestEnd > takenEnd) {
+          setRange(mandatoryFree, lastIndex, takenEnd, latestEnd);
+        } 
+//T:    |-----------------|
+//L:         |----------| 
+        else {
           mandatoryFree.remove(lastIndex);
         }
-      }else {
-        setRange(mandatoryFree, duration, lastIndex, currentStart, takenStart, false); 
-        if(currentEnd > takenEnd){
-          addRange(mandatoryFree, duration, takenEnd, currentEnd, false);
+      }
+//T:                |------|
+//L:         |----------| 
+      else {
+        setRange(mandatoryFree, lastIndex, latestStart, takenStart); 
+//T:             |--|
+//L:         |----------|
+        if(latestEnd > takenEnd) {
+          addRange(mandatoryFree, takenEnd, latestEnd);
         }
       }
     }
   }
 
-  private static void setRange(List<TimeRange> freeTime, long duration, int index, int start, int end, boolean cond){
-    TimeRange newRange = TimeRange.fromStartEnd(start, end, cond);
-    if(newRange.duration() < duration){
-      freeTime.remove(index);
-    }else{
-      freeTime.set(index, newRange);
-    }
+  private static void setRange(List<TimeRange> freeTime, int index, int start, int end) {
+    TimeRange newRange = TimeRange.fromStartEnd(start, end, false);
+    freeTime.set(index, newRange);
   }
 
-  private static void addRange(List<TimeRange> freeTime, long duration, int start, int end, boolean cond){
-    TimeRange newRange = TimeRange.fromStartEnd(start, end, cond);
-    if(newRange.duration() > duration){
-      freeTime.add(newRange);
-    }    
+  private static void addRange(List<TimeRange> freeTime, int start, int end) {
+    TimeRange newRange = TimeRange.fromStartEnd(start, end, false);
+    freeTime.add(newRange);
+    // if(newRange.duration() > duration) {
+    //   freeTime.add(newRange);
+    // }    
   }
 
-  private static void checkOptional (List<TimeRange> optionalFree, List<TimeRange> optionalBusy, 
-      TimeRange potentialTime){
+  private static void mutualFreeTimes(List<TimeRange> optionalFree, List<TimeRange> optionalBusy, 
+      TimeRange potentialTime) {
     boolean works = true;
-    for(TimeRange t: optionalBusy){
-      if(t.overlaps(potentialTime)){
+    for(TimeRange t: optionalBusy) {
+      if(t.overlaps(potentialTime)) {
         works = false;
         break;
       }
     }
-    if(works){
+    if(works) {
       optionalFree.add(potentialTime);
+    }
+  }
+
+  private static void removeTooShortTimes(List<TimeRange> timeRanges, long duration) {
+    for(int i = 0; i < timeRanges.size(); i++) {
+      if(timeRanges.get(i).duration() < duration) {
+        timeRanges.remove(i);
+      }
     }
   }
 }
