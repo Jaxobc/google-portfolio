@@ -42,14 +42,14 @@
 }
 
 /* Responsive layout - makes a two column-grid */
-@media screen and (max-width: 2000px) and (min-width: 10001px){
+@media screen and (max-width: 2000px) and (min-width: 10001px) {
   .column {
     flex: 50%;
     max-width: 50%;
     width: 300px;
     height: 300px;
   }
-} 
+}
 
 /* Responsive layout - makes a one columns grid */
 @media screen and (max-width: 1000px) {
@@ -57,7 +57,7 @@
     flex: 100%;
     max-width: 100%;
   }
-} 
+}
 
 /*Standard size of contact images */
 .contact {
@@ -103,12 +103,12 @@
   display: none;
 }
 
-.block-break { 
-  margin-bottom: 2em; 
+.block-break {
+  margin-bottom: 2em;
 }
 
-form label { 
-  display: block; 
+form label {
+  display: block;
 }
 
 form input {
@@ -117,4 +117,16 @@ form input {
 
 form select {
   display: block;
+}
+
+.index-style {
+  background-image: url('images/spikes.png');
+}
+
+.contact-style {
+  background-image: url('images/spikes.png');
+}
+
+.faq-style {
+  background-image: url('images/spikes.png');
 }

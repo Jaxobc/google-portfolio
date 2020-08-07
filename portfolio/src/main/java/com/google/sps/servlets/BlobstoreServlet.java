@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/blobstore-url")
 public class BlobstoreServlet extends HttpServlet {
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
