@@ -16,7 +16,6 @@ package com.google.sps.data;
 
 /** The comment object class. */
 public final class Comment {
-
   private final long id;
   private final String message;
   private final String author;

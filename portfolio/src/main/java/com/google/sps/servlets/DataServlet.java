@@ -21,27 +21,25 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.sps.data.Comment;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.gson.Gson;
+import com.google.sps.data.Comment;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
@@ -57,11 +55,12 @@ public class DataServlet extends HttpServlet {
   private final static String htmlName = "name";
   private final static String htmlLimit = "commentLimit";
 
-  private final static String blobImg = "image";
+  private final static String blobImg = "image-file";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query(tblTitle).addSort(tblTime, SortDirection.DESCENDING);;
+    Query query = new Query(tblTitle).addSort(tblTime, SortDirection.DESCENDING);
+    ;
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -73,7 +72,7 @@ public class DataServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String limit = (String) entity.getProperty(tblLimit);
       String image = (String) entity.getProperty(tblImage);
-      
+
       Comment comment = new Comment(id, commentString, name, limit, image);
       comments.add(comment);
     }
@@ -109,7 +108,7 @@ public class DataServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-    /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
@@ -146,5 +145,4 @@ public class DataServlet extends HttpServlet {
       return imagesService.getServingUrl(options);
     }
   }
-  
 }

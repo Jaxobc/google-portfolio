@@ -12,33 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* exported loadCommentSection */
+/* global google */
+// Neccessary constants or else variables will return as
+// 'undefined' in lint checks
+
+
 /** Fetches comments from the server and adds them to the DOM. */
 function loadCommentSection() {
   fetchBlobUrlAndShowForm();
 
-  fetch('/data').then(response => response.json()).then(data => {
+  fetch('/data').then((response) => response.json()).then((data) => {
     const commentElements = document.getElementById('comments');
     commentElements.innerText = '';
     const limit = document.getElementById('commentLimit').value;
     const limitMap = new Map();
-    var count = 0;
+    let count = 0;
 
-    data.forEach(comment => {
-      if (count < limit){
+    data.forEach((comment) => {
+      if (count < limit) {
         commentElements.appendChild(createCommentElement(comment));
         count++;
-      } 
-      var mapKey = comment.commentLimit;
-      var currentLimit = limitMap.has(mapKey) ? limitMap.get(mapKey) : 0;
-      limitMap.set(mapKey, currentLimit + 1); 
-    })
+      }
+      const mapKey = comment.commentLimit;
+      const currentLimit = limitMap.has(mapKey) ? limitMap.get(mapKey) : 0;
+      limitMap.set(mapKey, currentLimit + 1);
+    });
 
     google.charts.load('current', {packages: ['corechart']});
-    google.charts.setOnLoadCallback(function() {drawChart(limitMap);});
+    google.charts.setOnLoadCallback(function() {
+      drawChart(limitMap);
+    });
   });
 }
 
-/**Creates an element that represents a comment with a delete button. */
+/** Creates an element that represents a comment with a delete button. */
 function createCommentElement(comment) {
   const commentElement = document.createElement('li');
   commentElement.className = 'comment';
@@ -54,15 +62,15 @@ function createCommentElement(comment) {
   commentElement.appendChild(nameElement);
   commentElement.appendChild(textElement);
 
-  imageURL = comment.imageURL;
-  if(imageURL != null){
+  const imageURL = comment.imageURL;
+  if (imageURL != null) {
     const imgElement = document.createElement('img');
     imgElement.className = 'image';
     imgElement.setAttribute('src', imageURL);
 
     commentElement.appendChild(imgElement);
   }
-  
+
   return commentElement;
 }
 
@@ -73,7 +81,7 @@ function drawChart(limitMap) {
   data.addColumn('number', 'Count');
 
   for (const [key, value] of limitMap.entries()) {
-    data.addRow([key, value]);    
+    data.addRow([key, value]);
   }
 
   const options = {
@@ -82,16 +90,19 @@ function drawChart(limitMap) {
     'height': 400,
   };
 
-  const chart = new google.visualization.PieChart(document.getElementById('chart-div'));
+  const chart =
+      new google.visualization.PieChart(document.getElementById('chart-div'));
   chart.draw(data, options);
 }
 
 function fetchBlobUrlAndShowForm() {
-  fetch('/blobstore-url').then((response) => {return response.text();
-  })
-  .then((imageUploadUrl) => {
-    const messageForm = document.getElementById('form');
-    messageForm.action = imageUploadUrl;
-    messageForm.classList.remove('hidden');
-  });
+  fetch('/blobstore-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        const messageForm = document.getElementById('form');
+        messageForm.action = imageUploadUrl;
+        messageForm.classList.remove('hidden');
+      });
 }
